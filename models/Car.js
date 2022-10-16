@@ -46,7 +46,7 @@ carSchema.pre(/^find/, function (next) {
 		return next();
 	}
 	if (!('all' in this['_conditions'])) {
-		//@ts-ignore
+
 		this['_conditions'].isDeleted = false;
 	} else {
 		delete this['_conditions']['all'];

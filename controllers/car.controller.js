@@ -1,37 +1,76 @@
 const mongoose = require('mongoose');
 const Car = require('../models/Car');
-const carController = {};
+const carsController = {};
 
-carController.createCar = async (req, res, next) => {
+carsController.createCar = async (req, res, next) => {
 	try {
-		// YOUR CODE HERE
+		const carInfo = req.body;
+
+		if (!carInfo) throw new AppError(402, "Bad Request", "Create car Error");
+
+		const created = await car.create(carInfo);
+		sendResponse(
+			res,
+			200,
+			true,
+			{ car: created },
+			null,
+			"Create Car Successfully"
+		);
 	} catch (err) {
-		// YOUR CODE HERE
+		next(err);
 	}
 };
 
-carController.getCars = async (req, res, next) => {
+carsController.getCars = async (req, res, next) => {
+	const filter = {};
+
 	try {
-		// YOUR CODE HERE
+		car.f;
+    	const listOfFound = await car.find(filter).limit(2);
+    	sendResponse(
+			res,
+			200,
+			true,
+			{ car: listOfFound, page: 1, total: 1192 },
+			null,
+			"Get Car List Successfully!"
+    );
 	} catch (err) {
-		// YOUR CODE HERE
+		next(err);
 	}
 };
 
-carController.editCar = async (req, res, next) => {
+carsController.editCar = async (req, res, next) => {
+	const targetId = null;
+  	const updateInfo = "";
+
+  	const options = { new: true };
 	try {
-		// YOUR CODE HERE
+		const updated = await car.findByIdAndUpdate(targetId, updateInfo, options);
+    	sendResponse(res,200,true,{ car: updated },null,"Update Car Successfully!"
+    );
 	} catch (err) {
-		// YOUR CODE HERE
+		next(err);
 	}
 };
 
-carController.deleteCar = async (req, res, next) => {
-	try {
-		// YOUR CODE HERE
+carsController.deleteCar = async (req, res, next) => {
+		const targetId = null;
+		const options = { new: true };
+ 	 try {
+    const updated = await car.findByIdAndDelete(targetId, options);
+    sendResponse(
+		res,
+		200,
+		true,
+		{ car: updated },
+		null,
+		"Delete Car Successfully!"
+    );
 	} catch (err) {
-		// YOUR CODE HERE
+		next(err);
 	}
 };
 
-module.exports = carController;
+module.exports = carsController;
