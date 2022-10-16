@@ -29,7 +29,7 @@ router.put('/:id', editCar);
 // // DELETE
 /**
  * @route DELETE api/car
- * @description delet a car
+ * @description delete a car
  * @access public
  */
 router.delete('/:id', deleteCar);
