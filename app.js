@@ -6,7 +6,7 @@ const cors = require('cors');
 const indexRouter = require('./routes/index');
 const mongoose = require('mongoose');
 require('dotenv/config');
-const { sendResponse, AppError } = require("../helpers/utils.js");
+const { sendResponse, AppError } = require("./helpers/utils");
 
 const app = express();
 
