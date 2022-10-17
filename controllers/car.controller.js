@@ -28,7 +28,7 @@ carsController.getCars = async (req, res, next) => {
 
 	try {
 		car.f;
-    	const listOfFound = await car.find(filter).limit(2);
+    	const listOfFound = await car.find(filter).limit(10);
     	sendResponse(
 			res,
 			200,
