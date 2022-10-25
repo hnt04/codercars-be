@@ -24,16 +24,36 @@ carsController.createCar = async (req, res, next) => {
 };
 
 carsController.getCars = async (req, res, next) => {
-	const filter = {};
+	const allowedFilter = ["make","model","release_date","transmission_type","size","style","price"];
 
 	try {
-		car.f;
-    	const listOfFound = await car.find(filter).limit(10);
+		let { page, limit, ...filterQuery } = req.query;
+        page = parseInt(page) || 1
+        limit = parseInt(limit) || 10  
+
+        const filterKeys = Object.keys(filterQuery);
+
+        filterKeys.forEach((key) => {
+          if (!allowedFilter.includes(key)) {
+            const exception = new Error(`Query ${key} is not allowed`);
+            exception.statusCode = 401;
+            throw exception;
+          }
+          if (!filterQuery[key]) delete filterQuery[key];
+        });
+       
+    	let listOfFound = await car.find(filterQuery);
+
+		const totalPage = Math.ceil(listOfFound.length/limit);
+        const offset = (page - 1)*limit;
+  
+        listOfFound = listOfFound.slice(offset, offset + limit);
+
     	sendResponse(
 			res,
 			200,
 			true,
-			{ car: listOfFound, page: 1, total: 1192 },
+			listOfFound,
 			null,
 			"Get Car List Successfully!"
     );
@@ -43,13 +63,17 @@ carsController.getCars = async (req, res, next) => {
 };
 
 carsController.editCar = async (req, res, next) => {
-	const targetId = null;
-  	const updateInfo = "";
+	const { id } = req.params;
+    const {make,model,release_date,transmission_type,size,style}= req.body;
 
-  	const options = { new: true };
+    const options = { new:true }
+
 	try {
-		const updated = await car.findByIdAndUpdate(targetId, updateInfo, options);
-    	sendResponse(res,200,true,{ car: updated },null,"Update Car Successfully!"
+		const updated = await car.findByIdAndUpdate(id, 
+			{make,model,release_date,transmission_type,size,style}, 
+			options);
+
+    	sendResponse(res,200,true,updated,null,"Update Car Successfully!"
     );
 	} catch (err) {
 		next(err);
@@ -57,10 +81,10 @@ carsController.editCar = async (req, res, next) => {
 };
 
 carsController.deleteCar = async (req, res, next) => {
-		const targetId = null;
+		const {id} = req.params;
 		const options = { new: true };
  	 try {
-    const updated = await car.findByIdAndDelete(targetId, options);
+    const updated = await car.findByIdAndDelete(id, options);
     sendResponse(
 		res,
 		200,
