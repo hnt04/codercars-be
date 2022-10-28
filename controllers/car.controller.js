@@ -35,7 +35,7 @@ carsController.getCars = async (req, res, next) => {
 
         filterKeys.forEach((key) => {
           if (!allowedFilter.includes(key)) {
-            const exception = new Error(`Query ${key} is not allowed`);
+            const exception = new AppError(`Query ${key} is not allowed`);
             exception.statusCode = 401;
             throw exception;
           }
@@ -63,12 +63,16 @@ carsController.getCars = async (req, res, next) => {
 };
 
 carsController.editCar = async (req, res, next) => {
-	const { id } = req.params;
-    const {make,model,release_date,transmission_type,size,style}= req.body;
-
-    const options = { new:true }
-
 	try {
+		const { id } = req.params;
+		const {make,model,release_date,transmission_type,size,style}= req.body;
+	
+		const options = { new:true }
+
+		const newCar = await car.findById(id);
+
+		if(!newCar) throw new AppError(404, "Bad Request", "Car not found");
+
 		const updated = await car.findByIdAndUpdate(id, 
 			{make,model,release_date,transmission_type,size,style}, 
 			options);
